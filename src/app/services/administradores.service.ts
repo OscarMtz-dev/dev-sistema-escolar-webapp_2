@@ -101,5 +101,7 @@ export class AdministradoresService {
     //Return arreglo
     return error;
   }
+
+  //Registrar admin
 }
 
