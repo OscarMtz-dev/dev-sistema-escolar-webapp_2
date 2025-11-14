@@ -45,6 +45,7 @@ import { AlumnosScreenComponent } from './screens/alumnos-screen/alumnos-screen.
 import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-screen.component';
 import { NavbarUserComponent } from './partials/navbar-user/navbar-user.component';
 import { SidebarComponent } from './partials/sidebar/sidebar.component';
+import { EliminarUserModalComponent } from './modals/eliminar-user-modal/eliminar-user-modal.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { SidebarComponent } from './partials/sidebar/sidebar.component';
     AlumnosScreenComponent,
     MaestrosScreenComponent,
     NavbarUserComponent,
-    SidebarComponent
+    SidebarComponent,
+    EliminarUserModalComponent
   ],
   imports: [
     BrowserModule,
