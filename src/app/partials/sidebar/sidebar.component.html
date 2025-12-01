@@ -8,14 +8,43 @@
           <mat-icon>home</mat-icon>
           <span>Inicio</span>
         </li>
-        <li *ngIf="canSeeRegisterItem()" routerLink="/registro-usuarios" routerLinkActive="active"
-          (click)="closeSidebar()">
-          <mat-icon>person_add</mat-icon>
-          <span>Registro</span>
+
+        <!-- NUEVO: Dropdown de Registro -->
+        <li class="sidebar-dropdown-item" *ngIf="canSeeRegisterItem()">
+          <div class="dropdown-header" (click)="toggleRegistroDropdown(); $event.stopPropagation()">
+            <mat-icon>app_registration</mat-icon>
+            <span>Registro</span>
+            <mat-icon class="dropdown-arrow">
+              {{ registroDropdownOpen ? 'expand_less' : 'expand_more' }}
+            </mat-icon>
+          </div>
+
+          <!-- Opciones del dropdown de Registro -->
+          <ul class="dropdown-menu" [class.dropdown-open]="registroDropdownOpen">
+            <!-- Registro de usuarios -->
+            <li routerLink="/registro-usuarios" routerLinkActive="active" (click)="closeSidebar()">
+              <mat-icon>person_add</mat-icon>
+              <span>Registro de Usuarios</span>
+            </li>
+
+            <!-- Registro de eventos - Solo para administradores -->
+            <li *ngIf="facadeService.getUserGroup() === 'administrador'"
+                routerLink="/registro-eventos" routerLinkActive="active" (click)="closeSidebar()">
+              <mat-icon>event_note</mat-icon>
+              <span>Registro de Eventos</span>
+            </li>
+          </ul>
         </li>
+            <!-- Registro de eventos - Solo para administradores -->
+            <li *ngIf="facadeService.getUserGroup() === 'administrador'"
+                routerLink="/registro-eventos" routerLinkActive="active" (click)="closeSidebar()">
+              <mat-icon>event_note</mat-icon>
+              <span>Registro de Eventos</span>
+            </li>
+          </ul>
 
         <!-- Admins - Only for administrators -->
-        <li *ngIf="canSeeAdminItems()" routerLink="/administrador" routerLinkActive="active" (click)="closeSidebar()">
+        <li *ngIf="canSeeAdminItems()" routerLink="/administradores" routerLinkActive="active" (click)="closeSidebar()">
           <mat-icon>admin_panel_settings</mat-icon>
           <span>Admins</span>
         </li>
@@ -38,12 +67,13 @@
           <span>Gráficas</span>
         </li>
 
-        <!-- Eventos Académicos - Available for administrators and teachers -->
-        <li *ngIf="canSeeTeacherItems()" routerLink="/eventos-academicos" routerLinkActive="active" class="eventos-academicos" (click)="closeSidebar()">
+        <!-- Eventos Académicos - Lista de eventos para todos -->
+        <li *ngIf="canSeeEventosItems()" routerLink="/eventos" routerLinkActive="active" (click)="closeSidebar()">
           <mat-icon>event</mat-icon>
           <span>Eventos Académicos</span>
         </li>
-      </ul>
+
+
       <button mat-flat-button color="warn" class="logout-btn" (click)="logout()">
         <mat-icon>logout</mat-icon>
         <span>Cerrar sesión</span>

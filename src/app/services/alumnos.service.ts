@@ -143,6 +143,47 @@ export class AlumnosService {
     } else {
       headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     }
-    return this.http.delete<any>(`${environment.url_api}/alumnos/${idAlumno}/`, { headers });
+    return this.http.delete<any>(`${environment.url_api}/alumnos/?id=${idAlumno}`, { headers });
   }
+
+  //Servicio para obtener la lista de alumnos
+  public obtenerListaAlumnos (): Observable<any>{
+    const token = this.facadeService.getSessionToken();
+    let headers: HttpHeaders;
+    if (token) {
+      headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
+    } else {
+      headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    }
+    return this.http.get<any>(`${environment.url_api}/lista-alumnos/`, { headers });
+  }
+
+  //Servicio para actualizar el alumno
+    public actualizarAlumno(data: any): Observable<any>{
+    const token = this.facadeService.getSessionToken();
+    let headers: HttpHeaders;
+    if (token) {
+      headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
+    } else {
+      headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+      console.log("No se encontró el token del usuario");
+
+    }
+    return this.http.put<any>(`${environment.url_api}/alumnos/`, data, { headers });
+  }
+
+  public obtenerAlumnoPorID(idAlumno: number): Observable<any>{
+  const token = this.facadeService.getSessionToken();
+  let headers: HttpHeaders;
+  if (token) {
+    headers = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token });
+  } else {
+    headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    console.log("No se encontró el token del usuario");
+  }
+  return this.http.get<any>(`${environment.url_api}/alumnos/?id=${idAlumno}`, { headers });
+
+}
+
+
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import DatalabelsPlugin from 'chartjs-plugin-datalabels';
-import { AdministradoresService } from 'src/app/services/administradores.service';
+import { GraficasService } from 'src/app/services/graficas.service';
 
 @Component({
   selector: 'app-graficas-screen',
@@ -9,109 +9,98 @@ import { AdministradoresService } from 'src/app/services/administradores.service
 })
 export class GraficasScreenComponent implements OnInit{
 
-  //Agregar chartjs-plugin-datalabels
-  //Variables
-
   public total_user: any = {};
+  public cargando: boolean = true;
 
-  //Histograma
-  lineChartData = {
-    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    datasets: [
-      {
-        data:[89, 34, 43, 54, 28, 74, 93],
-        label: 'Registro de materias',
-        backgroundColor: '#F88406'
-      }
-    ]
-  }
-  lineChartOption = {
-    responsive:false
-  }
-  lineChartPlugins = [ DatalabelsPlugin ];
+  // Gráfica de Barras
+  public barChartData: any = {};
+  public barChartOption = { responsive: true }
+  public barChartPlugins = [DatalabelsPlugin];
 
-  //Barras
-  barChartData = {
-    labels: ["Congreso", "FePro", "Presentación Doctoral", "Feria Matemáticas", "T-System"],
-    datasets: [
-      {
-        data:[34, 43, 54, 28, 74],
-        label: 'Eventos Académicos',
-        backgroundColor: [
-          '#F88406',
-          '#FCFF44',
-          '#82D3FB',
-          '#FB82F5',
-          '#2AD84A'
-        ]
-      }
-    ]
-  }
-  barChartOption = {
-    responsive:false
-  }
-  barChartPlugins = [ DatalabelsPlugin ];
+  // Gráfica de Línea
+  public lineChartData: any = {};
+  public lineChartOption = { responsive: true }
+  public lineChartPlugins = [DatalabelsPlugin];
 
-  //Circular
-  pieChartData = {
-    labels: ["Administradores", "Maestros", "Alumnos"],
-    datasets: [
-      {
-        data:[89, 34, 43],
-        label: 'Registro de usuarios',
-        backgroundColor: [
-          '#FCFF44',
-          '#F1C8F2',
-          '#31E731'
-        ]
-      }
-    ]
-  }
-  pieChartOption = {
-    responsive:false
-  }
-  pieChartPlugins = [ DatalabelsPlugin ];
+  // Gráfica Circular
+  public pieChartData: any = {};
+  public pieChartOption = { responsive: true }
+  public pieChartPlugins = [DatalabelsPlugin];
 
-  // Doughnut
-  doughnutChartData = {
-    labels: ["Administradores", "Maestros", "Alumnos"],
-    datasets: [
-      {
-        data:[89, 34, 43],
-        label: 'Registro de usuarios',
-        backgroundColor: [
-          '#F88406',
-          '#FCFF44',
-          '#31E7E7'
-        ]
-      }
-    ]
-  }
-  doughnutChartOption = {
-    responsive:false
-  }
-  doughnutChartPlugins = [ DatalabelsPlugin ];
+  // Gráfica Doughnut
+  public doughnutChartData: any = {};
+  public doughnutChartOption = { responsive: true }
+  public doughnutChartPlugins = [DatalabelsPlugin];
 
   constructor(
-    private administradoresServices: AdministradoresService
+    private graficasService: GraficasService
   ) { }
 
   ngOnInit(): void {
-    this.obtenerTotalUsers();
+    this.obtenerDatosUsuarios();
   }
 
-  // Función para obtener el total de usuarios registrados
-  public obtenerTotalUsers(){
-    this.administradoresServices.getTotalUsuarios().subscribe(
-      (response)=>{
-        this.total_user = response;
-        console.log("Total usuarios: ", this.total_user);
-      }, (error)=>{
-        console.log("Error al obtener total de usuarios ", error);
+  public obtenerDatosUsuarios() {
+    this.cargando = true;
 
-        alert("No se pudo obtener el total de cada rol de usuarios");
+    this.graficasService.obtenerTotalesUsuarios().subscribe(
+      (response) => {
+        this.total_user = response;
+        this.crearGraficas(); // Crear gráficas con datos reales
+        this.cargando = false;
+      },
+      (error) => {
+        console.error('Error:', error);
+        // Datos de ejemplo si hay error
+        this.total_user = { admins: 1, maestros: 2, alumnos: 3 };
+        this.crearGraficas();
+        this.cargando = false;
       }
     );
   }
 
+  private crearGraficas() {
+    const admins = this.total_user.admins || 0;
+    const maestros = this.total_user.maestros || 0;
+    const alumnos = this.total_user.alumnos || 0;
+
+    // Gráfica de Barras
+    this.barChartData = {
+      labels: ["Administradores", "Maestros", "Alumnos"],
+      datasets: [{
+        data: [admins, maestros, alumnos],
+        label: 'Total de Usuarios',
+        backgroundColor: ['#F88406', '#FCFF44', '#82D3FB']
+      }]
+    };
+
+    // Gráfica de Línea
+    this.lineChartData = {
+      labels: ["Administradores", "Maestros", "Alumnos"],
+      datasets: [{
+        data: [admins, maestros, alumnos],
+        label: 'Total de Usuarios',
+        borderColor: '#F88406',
+        backgroundColor: 'rgba(248, 132, 6, 0.2)'
+      }]
+    };
+
+    // Gráfica Circular
+    this.pieChartData = {
+      labels: ["Administradores", "Maestros", "Alumnos"],
+      datasets: [{
+        data: [admins, maestros, alumnos],
+        backgroundColor: ['#FCFF44', '#F1C8F2', '#31E731']
+      }]
+    };
+
+    // Gráfica Doughnut
+    this.doughnutChartData = {
+      labels: ["Administradores", "Maestros", "Alumnos"],
+      datasets: [{
+        data: [admins, maestros, alumnos],
+        backgroundColor: ['#F88406', '#FCFF44', '#31E7E7']
+      }]
+    };
+  }
 }

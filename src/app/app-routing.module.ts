@@ -9,7 +9,9 @@ import { AlumnosScreenComponent } from './screens/alumnos-screen/alumnos-screen.
 import { HomeScreenComponent } from './screens/home-screen/home-screen.component';
 import { MaestrosScreenComponent } from './screens/maestros-screen/maestros-screen.component';
 import { GraficasScreenComponent } from './screens/graficas-screen/graficas-screen.component';
-
+import { EventosScreenComponent } from './screens/eventos-screen/eventos-screen.component';
+import { RegistroEventosComponent } from './partials/registro-eventos/registro-eventos.component';
+import { RegistroEventosScreenComponent } from './screens/registro-eventos-screen/registro-eventos-screen.component';
 const routes: Routes = [
   {
     path: '',
@@ -18,7 +20,9 @@ const routes: Routes = [
       { path: '', redirectTo: 'login', pathMatch: 'full' },
       { path: 'login', component: LoginScreenComponent },
       { path: 'registro-usuarios', component: RegistroUsuariosScreenComponent },
-      { path: 'registro-usuarios/:rol/:id', component: RegistroUsuariosScreenComponent }
+      { path: 'registro-usuarios/:rol/:id', component: RegistroUsuariosScreenComponent },
+      { path: 'registro-eventos', component: RegistroEventosScreenComponent },
+      { path: 'registro-eventos/:id', component: RegistroEventosScreenComponent }
     ]
   },
   {
@@ -29,7 +33,9 @@ const routes: Routes = [
       { path: 'administrador', component: AdminScreenComponent }, // Keep legacy route
       { path: 'alumnos', component: AlumnosScreenComponent },
       { path: 'maestros', component: MaestrosScreenComponent },
-      { path: 'graficas', component: GraficasScreenComponent }
+      { path: 'graficas', component: GraficasScreenComponent },
+      { path: 'eventos', component: EventosScreenComponent },
+      { path: 'eventos-academicos', component: EventosScreenComponent }
     ]
   },
   // fallback route

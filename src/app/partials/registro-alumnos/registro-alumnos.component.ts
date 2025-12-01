@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { FacadeService } from 'src/app/services/facade.service';
 import { AlumnosService } from 'src/app/services/alumnos.service';
 
 @Component({
@@ -29,15 +30,27 @@ export class RegistroAlumnosComponent implements OnInit {
     private router: Router,
     private location : Location,
     public activatedRoute: ActivatedRoute,
+    private facadeService: FacadeService,
     private alumnosService: AlumnosService
   ) { }
 
   ngOnInit(): void {
+  //El primer if valida si existe un parámetro en la URL
+  if(this.activatedRoute.snapshot.params['id'] != undefined){
+    this.editar = true;
+    //Asignamos a nuestra variable global el valor del ID que viene por la URL
+    this.idUser = this.activatedRoute.snapshot.params['id'];
+    console.log("ID User: ", this.idUser);
+    //Al iniciar la vista asignamos los datos del user
+    this.alumno = this.datos_user;
+  }else{
+    // Va a registrar un nuevo maestro
     this.alumno = this.alumnosService.esquemaAlumno();
-    // Rol del usuario
     this.alumno.rol = this.rol;
-
-    console.log("Datos alumno: ", this.alumno);
+    this.token = this.facadeService.getSessionToken();
+  }
+  //Imprimir datos en consola
+  console.log("Alumno: ", this.alumno);
   }
 
   public regresar(){
@@ -78,8 +91,21 @@ export class RegistroAlumnosComponent implements OnInit {
     }
   }
 
-  public actualizar(){
-    // Lógica para actualizar los datos de un alumno existente
+  public actualizar() {
+    this.errors = this.alumnosService.validarAlumno(this.alumno, this.editar);
+    if (Object.keys(this.errors).length > 0) {
+      return false;
+    }
+
+    this.alumnosService.actualizarAlumno(this.alumno).subscribe(
+      (response) => {
+        alert("Alumno actualizado exitosamente");
+        this.router.navigate(["alumnos"]);
+      }, (error) => {
+        alert("Error al actualizar alumno");
+      }
+    );
+
   }
 
   //Funciones para password

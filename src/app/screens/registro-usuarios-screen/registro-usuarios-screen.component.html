@@ -5,13 +5,17 @@
       <mat-card-header class="role-card-header">
         <div class="actions-header-colum">
           <ng-container *ngIf="!editar; else active">
-            <mat-card-title class="title-card">Registro de usuario</mat-card-title>
+            <mat-card-title class="title-card">
+              Registro de usuario
+            </mat-card-title>
             <mat-card-subtitle class="subtitle-card">
               Selecciona el tipo para mostrar el formulario correspondiente
             </mat-card-subtitle>
           </ng-container>
           <ng-template #active>
-            <mat-card-title class="title-card">Edición de usuario</mat-card-title>
+            <mat-card-title class="title-card">
+              Edición de usuario
+            </mat-card-title>
             <mat-card-subtitle class="subtitle-card">
               Modifica los datos del usuario seleccionado
             </mat-card-subtitle>
@@ -46,13 +50,14 @@
               <mat-icon class="me-1" fontIcon="person"></mat-icon>
               <span class="text-radio">Maestro</span>
             </mat-radio-button>
+
           </mat-radio-group>
         </div>
       </mat-card-content>
     </mat-card>
+
     <!-- Formularios de registro según el tipo seleccionado -->
     <div class="forms-area">
-      <!-- Formularios (vistas) de cada usuario (inyección dinámica) -->
       <app-registro-admin *ngIf="isAdmin" [rol]="tipo_user" [datos_user]="user"></app-registro-admin>
 
       <app-registro-alumnos *ngIf="isAlumno" [rol]="tipo_user"
@@ -60,7 +65,6 @@
 
       <app-registro-maestros *ngIf="isMaestro" [rol]="tipo_user"
         [datos_user]="editar ? user : null"></app-registro-maestros>
-
     </div>
   </div>
 </div>

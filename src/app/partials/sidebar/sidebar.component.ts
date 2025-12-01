@@ -11,10 +11,11 @@ export class SidebarComponent implements OnInit {
   mobileOpen = false;
   isMobileView = window.innerWidth < 900;
   userRole: string = '';
+  registroDropdownOpen: boolean = false; // ← NUEVA PROPIEDAD para dropdown de Registro
 
   constructor(
     private router: Router,
-    private facadeService: FacadeService
+    public facadeService: FacadeService
   ) { }
 
   ngOnInit(): void {
@@ -36,6 +37,12 @@ export class SidebarComponent implements OnInit {
 
   closeSidebar() {
     this.mobileOpen = false;
+    this.registroDropdownOpen = false; // ← Cerrar dropdown al cerrar sidebar
+  }
+
+  // NUEVO MÉTODO: Toggle del dropdown de Registro
+  toggleRegistroDropdown(): void {
+    this.registroDropdownOpen = !this.registroDropdownOpen;
   }
 
   logout() {
@@ -89,7 +96,14 @@ export class SidebarComponent implements OnInit {
     return this.isAdmin() || this.isTeacher();
   }
 
+  // Check if user can see Register dropdown (admin and teacher only)
   canSeeRegisterItem(): boolean {
     return this.isAdmin() || this.isTeacher();
+  }
+
+  // Check if user can see Eventos Académicos
+  canSeeEventosItems(): boolean {
+    // Eventos disponibles para todos los usuarios
+    return this.isAdmin() || this.isTeacher() || this.isStudent();
   }
 }

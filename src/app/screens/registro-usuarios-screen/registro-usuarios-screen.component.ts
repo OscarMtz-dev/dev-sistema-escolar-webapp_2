@@ -4,6 +4,9 @@ import { Location } from '@angular/common';
 import { FacadeService } from 'src/app/services/facade.service';
 import { MatRadioChange } from '@angular/material/radio';
 import { AdministradoresService } from 'src/app/services/administradores.service';
+import { MaestrosService } from '../../services/maestros.service';
+import { AlumnosService } from '../../services/alumnos.service';
+import { EventosService } from '../../services/eventos.service';
 
 @Component({
   selector: 'app-registro-usuarios-screen',
@@ -22,6 +25,7 @@ export class RegistroUsuariosScreenComponent implements OnInit {
   public isAdmin:boolean = false;
   public isAlumno:boolean = false;
   public isMaestro:boolean = false;
+  public isEvento:boolean = false;
 
   public tipo_user:string = "";
 
@@ -30,7 +34,10 @@ export class RegistroUsuariosScreenComponent implements OnInit {
     public activatedRoute: ActivatedRoute,
     private router: Router,
     public facadeService: FacadeService,
-    private administradoresService: AdministradoresService
+    private administradoresService: AdministradoresService,
+    private maestrosService: MaestrosService,
+    private alumnosService: AlumnosService,
+    private eventosService: EventosService
   ) { }
 
   ngOnInit(): void {
@@ -57,18 +64,27 @@ export class RegistroUsuariosScreenComponent implements OnInit {
       this.isAdmin = true;
       this.isAlumno = false;
       this.isMaestro = false;
+      this.isEvento = false;
       this.tipo_user = "administrador";
     }else if (event.value == "alumno"){
       this.isAdmin = false;
       this.isAlumno = true;
       this.isMaestro = false;
+      this.isEvento = false;
       this.tipo_user = "alumno";
     }else if (event.value == "maestro"){
       this.isAdmin = false;
       this.isAlumno = false;
       this.isMaestro = true;
+      this.isEvento = false;
       this.tipo_user = "maestro";
-    }
+    }else if (event.value == "evento") {  //CASO PARA EVENTOS
+    this.isAdmin = false;
+    this.isAlumno = false;
+    this.isMaestro = false;
+    this.isEvento = true;
+    this.tipo_user = "evento";
+  }
   }
 
   //Obtener usuario por ID
@@ -93,9 +109,34 @@ export class RegistroUsuariosScreenComponent implements OnInit {
         }
       );
     }else if(this.rol == "maestro"){
+            // TODO: Implementar lógica para obtener maestro por ID
+      this.maestrosService.obtenerMaestroPorID(this.idUser).subscribe(
+        (response) => {
+          this.user = response;
+          console.log("Usuario original obtenido: ", this.user);
+          // Asignar datos, soportando respuesta plana o anidada
+          this.user.first_name = response.user?.first_name || response.first_name;
+          this.user.last_name = response.user?.last_name || response.last_name;
+          this.user.email = response.user?.email || response.email;
+          this.user.tipo_usuario = this.rol;
+          this.isMaestro = true;
+        }, (error) => {
+          console.log("Error: ", error);
+          alert("No se pudo obtener el maestro seleccionado");
+        }
+    );
       // TODO: Implementar lógica para obtener maestro por ID
     }else if(this.rol == "alumno"){
-      // TODO: Implementar lógica para obtener alumno por ID
+        this.alumnosService.obtenerAlumnoPorID(this.idUser).subscribe(
+    (response) => {
+      this.user = response;
+      this.user.first_name = response.user?.first_name || response.first_name;
+      this.user.last_name = response.user?.last_name || response.last_name;
+      this.user.email = response.user?.email || response.email;
+      this.user.tipo_usuario = this.rol;
+      this.isAlumno = true;
+    }
+  );
     }
 
   }
